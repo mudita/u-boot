@@ -140,3 +140,13 @@ config CLK_IMXRT1170
 	select CLK_CCF
 	help
 	  This enables support clock driver for i.MXRT1170 platforms.
+
+
+config CLK_PUREPHONE
+	bool "Clock support for PurePhone"
+	depends on ARCH_IMXRT
+	select CLK
+	select CLK_CCF
+	select CLK_COMPOSITE_CCF
+	help
+	  This enables support clock driver for PurePhone.

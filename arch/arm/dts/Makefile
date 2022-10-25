@@ -990,6 +990,7 @@ dtb-$(CONFIG_ARCH_IMX9) += \
 dtb-$(CONFIG_ARCH_IMXRT) += imxrt1050-evk.dtb \
 	imxrt1020-evk.dtb \
 	imxrt1170-evk.dtb \
+	purephone-t7.dtb  \
 
 dtb-$(CONFIG_RCAR_GEN2) += \
 	r8a7790-lager-u-boot.dtb \

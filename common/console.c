@@ -305,6 +305,7 @@ static int console_tstc(int file)
 		if (dev->tstc != NULL) {
 			ret = dev->tstc(dev);
 			if (ret > 0) {
+				printf("rx:\n");
 				tstcdev = dev;
 				disable_ctrlc(prev);
 				return ret;

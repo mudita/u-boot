@@ -1,0 +1,68 @@
+// Copyright (c) 2017-2022, Mudita Sp. z.o.o. All rights reserved.
+// For licensing, see https://github.com/mudita/MuditaOS/LICENSE.md
+
+/ {
+	chosen {
+		u-boot,dm-spl;
+	};
+
+	clocks {
+		u-boot,dm-spl;
+	};
+
+	soc {
+		u-boot,dm-spl;
+	};
+};
+
+&osc {
+	u-boot,dm-spl;
+};
+
+&anatop {
+	u-boot,dm-spl;
+};
+
+&clks {
+	u-boot,dm-spl;
+};
+
+&gpt1 {
+	u-boot,dm-spl;
+};
+
+&lpuart3 { /* console */
+	u-boot,dm-spl;
+};
+
+&semc {
+	u-boot,dm-spl;
+
+	bank1: bank@0 {
+		u-boot,dm-spl;
+	};
+};
+
+&iomuxc {
+	u-boot,dm-spl;
+
+	purephone-t7 {
+		u-boot,dm-spl;
+
+		pinctrl_lpuart3: lpuart3grp {
+			u-boot,dm-spl;
+		};
+
+		pinctrl_semc: semcgrp {
+			u-boot,dm-spl;
+		};
+
+		pinctrl_usdhc2: usdhc2grp {
+			u-boot,dm-spl;
+		};
+	};
+};
+
+&usdhc2 {
+	u-boot,dm-spl;
+};

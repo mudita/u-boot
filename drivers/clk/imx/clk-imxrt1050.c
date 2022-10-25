@@ -170,6 +170,8 @@ static int imxrt1050_clk_probe(struct udevice *dev)
 	       imx_clk_gate2("usdhc2", "usdhc2_podf", base + 0x80, 4));
 	clk_dm(IMXRT1050_CLK_LPUART1,
 	       imx_clk_gate2("lpuart1", "lpuart_podf", base + 0x7c, 24));
+    clk_dm(IMXRT1050_CLK_LPUART3,
+           imx_clk_gate2("lpuart3", "lpuart_podf", base + 0x68, 12));
 	clk_dm(IMXRT1050_CLK_SEMC,
 	       imx_clk_gate2("semc", "semc_podf", base + 0x74, 4));
 	clk_dm(IMXRT1050_CLK_LCDIF_APB,
@@ -179,8 +181,8 @@ static int imxrt1050_clk_probe(struct udevice *dev)
 	clk_dm(IMXRT1050_CLK_USBOH3,
 	       imx_clk_gate2("usboh3", "pll3_usb_otg", base + 0x80, 0));
 
-	struct clk *clk, *clk1;
 
+    struct clk *clk, *clk1;
 #ifdef CONFIG_SPL_BUILD
 	/* bypass pll1 before setting its rate */
 	clk_get_by_id(IMXRT1050_CLK_PLL1_REF_SEL, &clk);
@@ -194,32 +196,42 @@ static int imxrt1050_clk_probe(struct udevice *dev)
 	clk_get_by_id(IMXRT1050_CLK_PLL1_BYPASS, &clk1);
 	clk_set_parent(clk1, clk);
 
-	clk_get_by_id(IMXRT1050_CLK_SEMC_SEL, &clk1);
-	clk_get_by_id(IMXRT1050_CLK_SEMC_ALT_SEL, &clk);
-	clk_set_parent(clk1, clk);
+    /// SEMC clock(133MHz) is provided by PLL2_PFD2(396MHz)
+    clk_get_by_id(IMXRT1050_CLK_SEMC_SEL, &clk1);
+    clk_get_by_id(IMXRT1050_CLK_SEMC_ALT_SEL, &clk);
+    clk_set_parent(clk1, clk);
 
-	clk_get_by_id(IMXRT1050_CLK_PLL2_SYS, &clk);
-	clk_enable(clk);
-	clk_set_rate(clk, 528000000UL);
+    /// Enable SYS PLL(528Mhz) and its PFD2
+    struct clk* sys_pll;
+    clk_get_by_id(IMXRT1050_CLK_PLL2_SYS, &sys_pll);
+    clk_enable(sys_pll);
+    clk_set_rate(sys_pll, 528000000UL);
+
+    struct clk* pll2_pfd2;
+    clk_get_by_id(IMXRT1050_CLK_PLL2_PFD2_396M, &pll2_pfd2);
+    clk_enable(pll2_pfd2);
+    clk_set_rate(pll2_pfd2, 396000000UL);
 
 	clk_get_by_id(IMXRT1050_CLK_PLL2_BYPASS, &clk1);
-	clk_set_parent(clk1, clk);
+	clk_set_parent(clk1, sys_pll);
 
-	/* Configure PLL3_USB_OTG to 480MHz */
-	clk_get_by_id(IMXRT1050_CLK_PLL3_USB_OTG, &clk);
-	clk_enable(clk);
-	clk_set_rate(clk, 480000000UL);
+    /// Configure PLL3_USB_OTG to 480MHz
+    clk_get_by_id(IMXRT1050_CLK_PLL3_USB_OTG, &clk);
+    clk_enable(clk);
+    clk_set_rate(clk, 480000000UL);
 
-	clk_get_by_id(IMXRT1050_CLK_PLL3_BYPASS, &clk1);
-	clk_set_parent(clk1, clk);
-#else
-	/* Set PLL5 for LCDIF to its default 650Mhz */
-	clk_get_by_id(IMXRT1050_CLK_PLL5_VIDEO, &clk);
-	clk_enable(clk);
-	clk_set_rate(clk, 650000000UL);
+    clk_get_by_id(IMXRT1050_CLK_PLL3_BYPASS, &clk1);
+    clk_set_parent(clk1, clk);
 
-	clk_get_by_id(IMXRT1050_CLK_PLL5_BYPASS, &clk1);
-	clk_set_parent(clk1, clk);
+    /// Route LPUART3 to OSC -> nie dziala to
+//    clk_get_by_id(IMXRT1050_CLK_OSC, &clk);
+//    clk_get_by_id(IMXRT1050_CLK_LPUART_SEL, &clk1);
+//    clk_set_parent(clk1, clk);
+
+    /// Route PIT/GPT to OSC
+//    clk_get_by_id(IMXRT1050_CLK_PERIPH_SEL, &clk1);
+//    clk_set_parent(clk1, clk);
+
 #endif
 
 	return 0;

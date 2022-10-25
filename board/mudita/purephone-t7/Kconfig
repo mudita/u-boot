@@ -1,0 +1,18 @@
+if TARGET_PUREPHONE_T7
+
+config SYS_BOARD
+	string
+	default "purephone-t7"
+
+config SYS_VENDOR
+	string
+	default "mudita"
+
+config SYS_CONFIG_NAME
+	string
+	default "purephone-t7"
+
+config IMX_CONFIG
+	default "board/mudita/purephone-t7/imximage.cfg"
+
+endif
